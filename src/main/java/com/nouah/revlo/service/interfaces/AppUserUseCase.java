@@ -5,6 +5,6 @@ import com.nouah.revlo.models.entity.AppUser;
 
 public interface AppUserUseCase {
     void userRegistration(AppUserDto userDto) throws IllegalArgumentException;
-    AppUser loadUser(String username) throws NullPointerException;
+    AppUser loadUser(String username);
 
 }
