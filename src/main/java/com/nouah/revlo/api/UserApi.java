@@ -35,6 +35,6 @@ public class UserApi {
     public ResponseEntity<ResponseDto> createAccount(@RequestBody AppUserDto userDto) {
         userService.userRegistration(userDto);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ResponseDto(REQUEST_PROCESSED, 201,true, Instant.now()));
+                .body(new ResponseDto(REQUEST_PROCESSED,201,true, Instant.now()));
     }
 }
