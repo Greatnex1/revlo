@@ -2,7 +2,6 @@ package com.nouah.revlo.models.entity;
 
 import com.nouah.revlo.models.enums.Authority;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +24,7 @@ public class AppUser {
     private String lastName;
     @Column(unique = true, nullable=false)
     private String username;
+    @Column(nullable = false)
     private String password;
     private String phoneNumber;
     @CreationTimestamp
