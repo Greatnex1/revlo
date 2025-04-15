@@ -6,14 +6,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,7 +19,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class JwtService implements JwtUseCase {
 
-//    @Value("${library.app.SecretKey}")
+//    @Value("${revlo.app.SecretKey}")
     private String SECRET_KEY;
 
     public String extractUsername(String token){
