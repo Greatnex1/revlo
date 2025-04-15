@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -29,23 +30,22 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authProvider;
+
     private final String[] NO_AUTH_ROUTES = {
-            "/api/register","/api/login","/v3/api-docs",
+            "/api/v1/users/register","/api/login","/v3/api-docs",
             "/v3/api-docs/**", "/swagger-ui.html","/swagger-ui/**"
     };
-//    private final String[] CSRF_ROUTES = {
-//            "/api/register","/api/login","/api/patrons/",
-//            "/api/patrons/{patronId}","/api/books/","/api/books/{bookId}",
-//            "/api/borrow/{bookId}/patron/{patronId}","/api/return/{bookId}/patron/{patronId}"
-//
-//    };
+    private final String[] CSRF_ROUTES = {
+            "/api/v1/users/register","/api/login","/api/clients/",
+            "/api/clients/{clientId}","/api/sales/","/api/books/{salesId}",
+
+
+    };
 
 //    private final String[] ADMIN_ROUTES = {
-//            "/api/register","/api/login","/api/patrons/","/api/patrons/","/api/patrons/{patronId}",
-//            "/api/patrons/{patronId}","/api/books/","/api/books/{bookId}","/api/patrons/{patronId}",
-//            "/api/borrow/{bookId}/patron/{patronId}","/api/return/{bookId}/patron/{patronId}",
-//            "/api/books/","/api/books/{bookId}","/api/books/{bookId}"
-//    };
+//     "/api/v1/users/register","/api/login","/api/clients/",
+//             "/api/clients/{clientId}","/api/sales/","/api/books/{salesId}",
+//   };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -61,16 +61,17 @@ public class SecurityConfig {
                     config.setExposedHeaders(List.of("Authorization"));
                     config.setMaxAge(3600L);
                     return config;
-                })).csrf((csrf) -> csrf.csrfTokenRequestHandler(requestHandler)
-//                        .ignoringRequestMatchers(CSRF_ROUTES)
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-                .authenticationProvider(authProvider)
-                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests((requests)->requests
-                        .requestMatchers(NO_AUTH_ROUTES).permitAll()
-//                        .requestMatchers(ADMIN_ROUTES).hasAuthority("ADMIN")
-                        .anyRequest().authenticated());
+                })).csrf(AbstractHttpConfigurer::disable);
+
+//                      .ignoringRequestMatchers( "/api/v1/users/register")
+//                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+//                .authenticationProvider(authProvider)
+//                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+//                .authorizeHttpRequests((requests)->requests
+//                        .requestMatchers(NO_AUTH_ROUTES).permitAll()
+////                      .requestMatchers(ADMIN_ROUTES).hasAuthority("ADMIN")
+//                        .anyRequest().authenticated());
         return  http.build();
 
     }
