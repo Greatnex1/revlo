@@ -1,5 +1,6 @@
 package com.nouah.revlo.config;
 
+import com.nouah.revlo.audit.ApplicationAuditAware;
 import com.nouah.revlo.models.entity.AppUser;
 import com.nouah.revlo.repository.AppUserRepository;
 import com.nouah.revlo.security.TrustedUser;
@@ -8,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -44,6 +46,11 @@ public class ApplicationSecurityConfig {
         authProvider.setUserDetailsService(userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder);
         return authProvider;
+    }
+
+    @Bean
+    public AuditorAware<Long> auditorAware(){
+        return new ApplicationAuditAware();
     }
 
     @Bean
