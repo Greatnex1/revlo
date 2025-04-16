@@ -5,7 +5,6 @@ import com.nouah.revlo.dto.ResponseDto;
 import com.nouah.revlo.service.implementation.AppUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Instant;
 
 import static com.nouah.revlo.constants.ErrorMessages.REQUEST_PROCESSED;
-import static com.nouah.revlo.constants.UrlConstant.USER_URL;
+import static com.nouah.revlo.constants.UrlConstant.URL_CONSTANT;
+
 
 
 @AllArgsConstructor
 @RestController
-@RequestMapping(USER_URL)
+@RequestMapping(URL_CONSTANT + "/users")
 @Tag(name="Revlo User Endpoint",
         description = "This class implements user's registration on the application"
 )
