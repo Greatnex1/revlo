@@ -4,7 +4,7 @@ import com.nouah.revlo.dto.request.AuthenticationRequest;
 import com.nouah.revlo.dto.response.AuthenticationResponse;
 import com.nouah.revlo.models.entity.AppUser;
 import com.nouah.revlo.repository.AppUserRepository;
-import com.nouah.revlo.security.TrustedUser;
+import com.nouah.revlo.security.TrustedAppUser;
 import com.nouah.revlo.service.interfaces.AuthUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +41,7 @@ public class AuthService implements AuthUseCase {
                 throw new RuntimeException(e.getLocalizedMessage());
             }
             AppUser foundUser = userRepository.findByUsername(request.username().toLowerCase()).orElseThrow(() -> new IllegalArgumentException("user not found"));
-            TrustedUser user = new TrustedUser(foundUser);
+            TrustedAppUser user = new TrustedAppUser(foundUser);
             String jwtToken = jwtService.generateToken(user);
             log.info("Authentication was successful for : {}", request.username());
 

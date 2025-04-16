@@ -2,8 +2,7 @@ package com.nouah.revlo.config;
 
 import com.nouah.revlo.audit.ApplicationAuditAware;
 import com.nouah.revlo.models.entity.AppUser;
-import com.nouah.revlo.repository.AppUserRepository;
-import com.nouah.revlo.security.TrustedUser;
+import com.nouah.revlo.security.TrustedAppUser;
 import com.nouah.revlo.service.implementation.AppUserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,8 +14,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @AllArgsConstructor
@@ -32,7 +29,7 @@ public class ApplicationSecurityConfig {
         return email -> {
             try{
                 AppUser user = userService.loadUser(email);
-                return new TrustedUser(user);
+                return new TrustedAppUser(user);
             } catch (IllegalArgumentException e) {
                 log.info("User not found!!");
                 throw new RuntimeException(e);
