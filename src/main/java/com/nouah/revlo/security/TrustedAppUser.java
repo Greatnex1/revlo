@@ -12,7 +12,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Slf4j
-public class TrustedUser implements UserDetails {
+public class TrustedAppUser implements UserDetails {
 
      private final AppUser user;
 
