@@ -7,6 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import java.security.Key;
@@ -19,7 +20,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class JwtService implements JwtUseCase {
 
-//    @Value("${revlo.app.SecretKey}")
+    @Value("${application.security.jwt.secret-key}")
     private String SECRET_KEY;
 
     public String extractUsername(String token){
