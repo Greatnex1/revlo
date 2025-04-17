@@ -7,6 +7,7 @@ import com.nouah.revlo.dto.SalesUpdateDto;
 import com.nouah.revlo.exception.RevloException;
 import com.nouah.revlo.models.entity.Sales;
 import com.nouah.revlo.service.implementation.SalesService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -50,16 +51,15 @@ public class SalesApi {
     public ResponseEntity<ResponseDto> updateSales(@Valid @RequestParam long salesId,
                                                    @Valid @RequestParam long userId,
                                                    @Valid @RequestBody SalesUpdateDto salesUpdateDto) throws RevloException {
-        boolean isUpdated = salesService.updateSales(salesId,userId,salesUpdateDto);
-        if (isUpdated){
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(new ResponseDto(REQUEST_PROCESSED, 200,true, Instant.now()));
-        }else {
-            return ResponseEntity
-                    .status(HttpStatus.EXPECTATION_FAILED)
-                    .body(new ResponseDto(REQUEST_FAILED, 417,false, Instant.now()));
-        }
+
+        boolean isUpdated = salesService.updateSales(salesId, userId, salesUpdateDto);
+
+        HttpStatus status = isUpdated ? HttpStatus.OK : HttpStatus.EXPECTATION_FAILED;
+        int statusCode = isUpdated ? 200 : 417;
+
+        ResponseDto response = new ResponseDto(REQUEST_PROCESSED, statusCode, true, Instant.now());
+
+        return ResponseEntity.status(status).body(response);
     }
     @GetMapping("/all/transactions")
     public ResponseEntity<List<Sales>> getAllTransactions(){
@@ -67,6 +67,7 @@ public class SalesApi {
         return ResponseEntity.status(HttpStatus.OK).body(sales);
     }
     @GetMapping("/reports/sales")
+    @Operation(summary = "Sales Report")
     public ResponseEntity<SalesReportDto> getSalesReport(@Valid @RequestParam String startDate,
                                                          @Valid @RequestParam String endDate) {
         SalesReportDto salesReport = salesService.generateSalesReport(startDate, endDate);
