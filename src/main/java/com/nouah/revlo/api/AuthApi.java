@@ -3,6 +3,7 @@ package com.nouah.revlo.api;
 import com.nouah.revlo.dto.request.AuthenticationRequest;
 import com.nouah.revlo.dto.response.AuthenticationResponse;
 import com.nouah.revlo.service.interfaces.AuthUseCase;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import static com.nouah.revlo.constants.UrlConstant.URL_CONSTANT;
 public class AuthApi {
     private AuthUseCase authService;
     @PostMapping("/login")
+    @Operation(summary = "Login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody @Valid AuthenticationRequest loginDto) {
     return ResponseEntity.ok(authService.authenticate(loginDto));
     }
