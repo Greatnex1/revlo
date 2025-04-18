@@ -16,7 +16,6 @@ import static com.nouah.revlo.constants.UrlConstant.URL_CONSTANT;
 @AllArgsConstructor
 @RestController
 @RequestMapping(URL_CONSTANT + "/auth")
-
 public class AuthApi {
     private AuthUseCase authService;
     @PostMapping("/login")
