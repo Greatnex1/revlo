@@ -47,6 +47,7 @@ public class SalesApi {
         Sales sales = salesService.findSalesById(salesId);
         return ResponseEntity.status(HttpStatus.OK).body(sales);
     }
+
     @PutMapping("/update")
     public ResponseEntity<ResponseDto> updateSales(@Valid @RequestParam long salesId,
                                                    @Valid @RequestParam long userId,
