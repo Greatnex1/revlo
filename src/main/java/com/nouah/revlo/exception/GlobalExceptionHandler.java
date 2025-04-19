@@ -11,11 +11,10 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-
     @ExceptionHandler(UserAlreadyExistException.class)
     public ResponseEntity<APIError> handleUserAlreadyExists(UserAlreadyExistException ex) {
         ex.printStackTrace();
-        return ResponseEntity.badRequest().body(APIError.builder()
+        return ResponseEntity.status(409).body(APIError.builder()
                 .status(HttpStatus.CONFLICT)
                 .message("User already exists, please choose another username")
                 .build());
@@ -46,7 +45,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<APIError> handleGeneralError(Exception ex) {
         ex.printStackTrace();
-        return ResponseEntity.badRequest().body(APIError.builder()
+        return ResponseEntity.internalServerError().body(APIError.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .message("Error came from the server")
                 .build());
