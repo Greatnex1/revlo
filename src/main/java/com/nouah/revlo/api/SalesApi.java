@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static com.nouah.revlo.constants.ErrorMessages.REQUEST_FAILED;
@@ -35,11 +36,11 @@ public class SalesApi {
         if (isCreated){
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(new ResponseDto(REQUEST_PROCESSED, 200,true, Instant.now()));
+                    .body(new ResponseDto(REQUEST_PROCESSED, 200,true, ZonedDateTime.now()));
         }else {
             return ResponseEntity
                     .status(HttpStatus.EXPECTATION_FAILED)
-                    .body(new ResponseDto(REQUEST_FAILED, 417,false, Instant.now()));
+                    .body(new ResponseDto(REQUEST_FAILED, 417,false, ZonedDateTime.now()));
         }
     }
     @GetMapping
@@ -58,7 +59,7 @@ public class SalesApi {
         HttpStatus status = isUpdated ? HttpStatus.OK : HttpStatus.EXPECTATION_FAILED;
         int statusCode = isUpdated ? 200 : 417;
 
-        ResponseDto response = new ResponseDto(REQUEST_PROCESSED, statusCode, true, Instant.now());
+        ResponseDto response = new ResponseDto(REQUEST_PROCESSED, statusCode, true, ZonedDateTime.now());
 
         return ResponseEntity.status(status).body(response);
     }
