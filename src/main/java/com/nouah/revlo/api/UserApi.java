@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
+import java.time.ZonedDateTime;
 
 import static com.nouah.revlo.constants.ErrorMessages.REQUEST_PROCESSED;
 import static com.nouah.revlo.constants.UrlConstant.URL_CONSTANT;
@@ -35,6 +36,6 @@ public class UserApi {
     public ResponseEntity<ResponseDto> createAccount(@RequestBody AppUserDto userDto) {
         userService.userRegistration(userDto);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ResponseDto(REQUEST_PROCESSED,201,true, Instant.now()));
+                .body(new ResponseDto(REQUEST_PROCESSED,201,true, ZonedDateTime.now()));
     }
 }
