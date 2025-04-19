@@ -47,7 +47,7 @@ public class AppUserService implements AppUserUseCase {
                           .dateCreated(LocalDateTime.now())
                            .build();
                    userRepository.save(newUser);
-                   log.info("User with username->{}, registered successfully", newUser.getUsername());
+                   log.info("User with username->{} registered successfully", newUser.getUsername());
               }
 
     @Override
