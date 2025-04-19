@@ -4,20 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@AllArgsConstructor
-@Data
-public class AuthenticationResponse {
-    private String accessToken;
-    private long userId;
 
-    public static AuthenticationResponse of(String jwtToken, long userId){
+public record AuthenticationResponse(
+        @JsonProperty("access_token")
+        String accessToken,
+        String userId
+
+) {
+    public static AuthenticationResponse pass(String jwtToken, String userId) {
         return new AuthenticationResponse(jwtToken,userId);
     }
-
-//    @JsonProperty("access_token")
-//    private String accessToken;
-//    @JsonProperty("refresh_token")
-//    private String refreshToken;
-//    @JsonProperty("token_type")
-//    private String tokenType;
 }
