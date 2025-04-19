@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static com.nouah.revlo.constants.ErrorMessages.REQUEST_FAILED;
@@ -35,7 +36,7 @@ public class ClientApi {
         clientService.addClient(userId,clientDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new ResponseDto(REQUEST_PROCESSED, 201,true, Instant.now()));
+                .body(new ResponseDto(REQUEST_PROCESSED, 201,true, ZonedDateTime.now()));
     }
     @GetMapping("/search")
     @Operation(summary="Get a client by phone number")
@@ -52,7 +53,7 @@ public class ClientApi {
         HttpStatus status = isUpdated ? HttpStatus.OK : HttpStatus.EXPECTATION_FAILED;
         int statusCode = isUpdated ? 200 : 417;
 
-        ResponseDto response = new ResponseDto(REQUEST_PROCESSED, statusCode, true, Instant.now());
+        ResponseDto response = new ResponseDto(REQUEST_PROCESSED, statusCode, true, ZonedDateTime.now());
 
         return ResponseEntity.status(status).body(response);
     }
@@ -78,7 +79,7 @@ public class ClientApi {
         int code = isDeleted ? 204 : 417;
         String message = isDeleted ? REQUEST_PROCESSED : REQUEST_FAILED;
 
-        ResponseDto response = new ResponseDto(message, code, true, Instant.now());
+        ResponseDto response = new ResponseDto(message, code, true, ZonedDateTime.now());
 
         return ResponseEntity.status(status).body(response);
 
