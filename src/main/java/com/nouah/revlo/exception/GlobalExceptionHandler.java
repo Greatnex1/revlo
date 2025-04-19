@@ -2,10 +2,13 @@ package com.nouah.revlo.exception;
 import jdk.jfr.Registered;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-//@RestControllerAdvice
+import java.util.stream.Collectors;
+
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
 
@@ -28,18 +31,17 @@ public class GlobalExceptionHandler {
     }
 
 
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ResponseEntity<APIError> handleValidationErrors(MethodArgumentNotValidException ex) {
-//        String errorMessage = ex.getBindingResult().getFieldErrors().stream()
-//                .map(err -> err.getField() + ": " + err.getDefaultMessage())
-//                .collect(Collectors.joining(", "));
-//
-//        e.printStackTrace();
-//        return ResponseEntity.badRequest().body(APIError.builder()
-//                .status(HttpStatus.BAD_REQUEST)
-//                .message(e.getLocalizedMessage())
-//                .build());
-//    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<APIError> handleValidationErrors(MethodArgumentNotValidException ex) {
+        String errorMessage = ex.getBindingResult().getFieldErrors().stream()
+                .map(err -> err.getField() + ": " + err.getDefaultMessage())
+                .collect(Collectors.joining(", "));
+             ex.printStackTrace();
+        return ResponseEntity.badRequest().body(APIError.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .message(ex.getLocalizedMessage())
+                .build());
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<APIError> handleGeneralError(Exception ex) {
