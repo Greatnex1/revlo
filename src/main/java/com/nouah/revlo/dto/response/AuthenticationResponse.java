@@ -8,10 +8,10 @@ import lombok.Data;
 public record AuthenticationResponse(
         @JsonProperty("access_token")
         String accessToken,
-        String userId
+        long userId
 
 ) {
-    public static AuthenticationResponse pass(String jwtToken, String userId) {
+    public static AuthenticationResponse of(String jwtToken, long userId) {
         return new AuthenticationResponse(jwtToken,userId);
     }
 }
