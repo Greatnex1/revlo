@@ -21,7 +21,7 @@ public class AuthApi {
     private AuthUseCase authService;
 
     @PostMapping("/login")
-    @Operation(summary = "Login")
+    @Operation(summary = "Login", description = "generates token for user after login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody @Valid AuthenticationRequest loginDto) {
     return ResponseEntity.ok(authService.authenticate(loginDto));
     }
