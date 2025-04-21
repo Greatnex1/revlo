@@ -29,7 +29,9 @@ public class AppUserService implements AppUserUseCase {
            if (!isValidPassword(staffDto.password())) {
                throw new IllegalArgumentException("password must have at least 8 characters, 1 upper case, 1 number, 1 special character");
            }
-
+        if (!isValidPhoneNumber(staffDto.phoneNumber())) {
+            throw new IllegalArgumentException("invalid phoneNumber format,use the following format:+234 or +244");
+        }
            Optional<AppUser> existingUser = userRepository.findByUsername(staffDto.username().toLowerCase());
 
            if (existingUser.isPresent()) {
@@ -38,16 +40,7 @@ public class AppUserService implements AppUserUseCase {
               if (!staffDto.password().equals(staffDto.confirmPassword())) {
                   throw new IllegalArgumentException("Password does not match");
               }
-                  AppUser newUser = AppUser.builder()
-                           .firstName(staffDto.firstName())
-                           .lastName(staffDto.lastName())
-                           .username(staffDto.username())
-                           .password(passwordEncoder.encode(staffDto.password()))
-                           .authority(Authority.valueOf(staffDto.authority()))
-                          .dateCreated(LocalDateTime.now())
-                           .build();
-                   userRepository.save(newUser);
-                   log.info("User with username->{} registered successfully", newUser.getUsername());
+                 buildNewUser(staffDto);
               }
 
     @Override
@@ -58,5 +51,22 @@ public class AppUserService implements AppUserUseCase {
     private boolean isValidPassword(String password){
 //        password must have at least 8 characters, 1 upper case, 1 number, 1 special character
         return password.matches("^(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!])(?!.*\\s).{8,}$");
+    }
+
+    private boolean isValidPhoneNumber(String password){
+        return password.matches("^\\+234[0-9]{10}$|\\+244[0-9]{10}$");
+    }
+
+    private void buildNewUser(AppUserDto staffDto) {
+        AppUser newUser = AppUser.builder()
+                .firstName(staffDto.firstName())
+                .lastName(staffDto.lastName())
+                .username(staffDto.username())
+                .password(passwordEncoder.encode(staffDto.password()))
+                .authority(Authority.valueOf(staffDto.authority()))
+                .dateCreated(LocalDateTime.now())
+                .build();
+        userRepository.save(newUser);
+        log.info("User with username->{} registered successfully", newUser.getUsername());
     }
 }
