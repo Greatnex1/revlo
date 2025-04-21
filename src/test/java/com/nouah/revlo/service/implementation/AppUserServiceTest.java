@@ -52,6 +52,7 @@ class AppUserServiceTest {
 void remove(){
         userRepository.deleteAll();
     }
+
     @Test
     void testThatUserCanRegister() {
      when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
