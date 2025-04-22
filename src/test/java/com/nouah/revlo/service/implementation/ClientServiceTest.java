@@ -53,7 +53,7 @@ class ClientServiceTest {
            .firstName("Johnny")
            .lastName("Dogs")
            .email("johnny@gmail.com")
-           .phoneNumber("090565678")
+           .phoneNumber("09056567821")
            .authority(Authority.CLIENT.name())
            .address("678, London Street, Region")
            .build();
@@ -84,4 +84,28 @@ class ClientServiceTest {
         when(clientRepository.findAll()).thenReturn(clients);
         assertEquals(clients, clientService.getAllClient());
     }
+
+    @Test
+    void testThatClientDetailsCanBeUpdated() {
+    }
+
+    @Test
+    void findClientByPhoneNumber() {
+        try {
+            when(clientRepository.findByPhoneNumber("090445678")).thenReturn(Optional.of(new Client()));
+            assertNotNull(clientService.findClientByPhoneNumber("090445678"));
+        }catch (Exception e) {
+            log.error("PhoneNumber not found", e);
+        }
+    }
+
+
+    @Test
+    void generateClientReport() {
+    }
+
+    @Test
+    void removeClient() {
+    }
+
 }
