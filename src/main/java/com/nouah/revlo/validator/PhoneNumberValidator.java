@@ -9,7 +9,10 @@ import java.util.regex.Pattern;
 
 public class PhoneNumberValidator implements ConstraintValidator<ValidPhoneNumber, String> {
 
-    private static final String PHONE_PATTERN = "^\\+234[0-9]{10}$";
+//    private static final String DIAL_PATTERN = "^\\+234[0-9]{10}$";
+    private static final String PHONE_PATTERN = "^[0-9]{11}$";
+
+
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
         return value != null && value.matches(PHONE_PATTERN);
