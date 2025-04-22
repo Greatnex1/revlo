@@ -30,6 +30,16 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(PhoneNumberException.class)
+    public ResponseEntity<APIError> handleInvalidPhoneNumber(PhoneNumberException ex) {
+        ex.printStackTrace();
+        return ResponseEntity.badRequest().body(APIError.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .message("Phone number is invalid")
+                .build());
+    }
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<APIError> handleValidationErrors(MethodArgumentNotValidException ex) {
         String errorMessage = ex.getBindingResult().getFieldErrors().stream()
