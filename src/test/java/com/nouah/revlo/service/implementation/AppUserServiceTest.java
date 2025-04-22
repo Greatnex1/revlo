@@ -44,7 +44,7 @@ class AppUserServiceTest {
                 .username("Blessed")
                 .password("Password@567")
                 .confirmPassword("Password@567")
-                .phoneNumber("+2348153579979")
+                .phoneNumber("08153579979")
                 .authority("ADMIN")
                 .build();
     }
