@@ -46,7 +46,7 @@ public class Client {
     @Column(insertable = false)
     private LocalDateTime dateLastModified;
     @CreatedBy
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private Long createdBy;
     @LastModifiedBy
     @Column(insertable = false)
