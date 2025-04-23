@@ -1,5 +1,7 @@
 package com.nouah.revlo.dto;
 
+import com.nouah.revlo.validator.annotation.ValidPhoneNumber;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 
 import java.math.BigDecimal;
@@ -7,13 +9,14 @@ import java.math.BigDecimal;
 import static com.nouah.revlo.validator.InputValidator.validateInput;
 @Builder
 public record ClientDto(
-         Long id,
          String firstName,
          String lastName,
          String email,
+         @ValidPhoneNumber
          String phoneNumber,
          String address,
          BigDecimal totalSpent,
+         Long createdBy,
          String authority
 ) {
 
