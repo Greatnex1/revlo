@@ -1,6 +1,7 @@
 package com.nouah.revlo.service.implementation;
 
 import com.nouah.revlo.dto.AppUserDto;
+import com.nouah.revlo.exception.PhoneNumberException;
 import com.nouah.revlo.exception.UserAlreadyExistException;
 import com.nouah.revlo.models.entity.AppUser;
 import com.nouah.revlo.models.enums.Authority;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +33,7 @@ public class AppUserService implements AppUserUseCase {
                throw new IllegalArgumentException("password must have at least 8 characters, 1 upper case, 1 number, 1 special character");
            }
         if (!isValidPhoneNumber(staffDto.phoneNumber())) {
-            throw new IllegalArgumentException("invalid phoneNumber format,use the following format:+234 or +244");
+            throw new PhoneNumberException("invalid phoneNumber format");
         }
            Optional<AppUser> existingUser = userRepository.findByUsername(staffDto.username().toLowerCase());
 
@@ -53,8 +56,15 @@ public class AppUserService implements AppUserUseCase {
         return password.matches("^(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!])(?!.*\\s).{8,}$");
     }
 
-    private boolean isValidPhoneNumber(String password){
-        return password.matches("^\\+234[0-9]{10}$|\\+244[0-9]{10}$");
+//    private boolean isValidPhoneNumber(String phoneNumber){
+//        return phoneNumber.matches("^\\+234[0-9]{10}$|\\+244[0-9]{10}$");
+//    }
+
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        String regex = "^[0-9]{11}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(phoneNumber);
+        return matcher.matches();
     }
 
     private void buildNewUser(AppUserDto staffDto) {
