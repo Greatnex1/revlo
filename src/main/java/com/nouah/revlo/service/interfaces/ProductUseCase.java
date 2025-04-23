@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ProductUseCase {
     ProductResponse createProduct(ProductDto productDto);
-    boolean updateProduct(long productId, ProductDto productDto) throws RevloException;
+    boolean updateProduct(long productId, ProductDto productDto);
     Product findProductById(long productId) throws RevloException;
     List<Product> getAllProduct();
     boolean deleteProduct(long productId) throws RevloException;
