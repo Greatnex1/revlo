@@ -32,7 +32,7 @@ public class ClientApi {
 
     @PostMapping("/create")
     @Operation(summary="Onboard a client")
-    public ResponseEntity<ResponseDto> createClient(@Valid @RequestParam Long userId, @Valid @RequestBody ClientDto clientDto)  {
+    public ResponseEntity<ResponseDto> createClient(@Valid @RequestParam Long userId, @RequestBody @Valid ClientDto clientDto)  {
         clientService.addClient(userId,clientDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
