@@ -2,6 +2,8 @@ package com.nouah.revlo.service.implementation;
 
 import com.nouah.revlo.dto.ClientDto;
 import com.nouah.revlo.dto.ClientReportDto;
+import com.nouah.revlo.dto.request.PageRequestData;
+import com.nouah.revlo.exception.PhoneNumberException;
 import com.nouah.revlo.exception.RevloException;
 import com.nouah.revlo.models.entity.AppUser;
 import com.nouah.revlo.models.entity.Client;
@@ -11,10 +13,12 @@ import com.nouah.revlo.repository.ClientRepository;
 import com.nouah.revlo.service.interfaces.ClientUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -23,6 +27,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static com.nouah.revlo.service.implementation.ProductService.getPageRequestData;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +45,7 @@ public class ClientService implements ClientUseCase {
         AppUser user = userRepository.findById(userId).orElseThrow(()->
                 new UsernameNotFoundException("Invalid User"));
         if (!isValidPhoneNumber(clientDto.phoneNumber())){
-            throw new IllegalArgumentException("The Phone number is not valid");
+            throw new PhoneNumberException("Invalid phone number");
         }
         clientDto.validateClientDtoData();
         Client newClient = Client.builder()
@@ -49,10 +55,12 @@ public class ClientService implements ClientUseCase {
                 .address(clientDto.address())
                 .phoneNumber(clientDto.phoneNumber())
                 .authority(Authority.valueOf(clientDto.authority()))
-                .totalSpent(BigDecimal.ZERO)
+                .totalSpent(clientDto.totalSpent())
+                .createdBy(userId)
                 .dateCreated(LocalDateTime.now())
                 .build();
         log.info("{} {} was registered by {}", newClient.getFirstName(),newClient.getLastName(),user.getUsername() );
+      log.info("total spent on a product: {}", newClient.getTotalSpent());
        clientRepository.save(newClient);
     }
 
@@ -86,6 +94,26 @@ public class ClientService implements ClientUseCase {
         return clientRepository.findAll();
     }
 
+//    @Override
+//    public Page<Client> searchClient(String searchText, int page, int size) throws RevloException {
+////        PageRequestData pageInfo = getPageRequestData(page, size);
+////        Page<Client> clients;
+////        Pageable pageable = PageRequest.of(pageInfo.page(), pageInfo.size(), Sort.by(Sort.Direction.DESC, "dateCreated"));
+////        if (searchText != null) {
+////            clients = clientRepository.findClientsByPhoneNumber(searchText, pageable);
+////        } else {
+////            clients = clientRepository.findAll(pageable);
+////              }
+////        return clients;
+//    }
+
+
+
+    @Override
+    public Page<Client> viewAllClients(Pageable pageable) throws RevloException {
+        return clientRepository.findAll(pageable);
+    }
+
     @Override
     public ClientReportDto generateClientReport() {
 
@@ -100,7 +128,7 @@ public class ClientService implements ClientUseCase {
                 .sorted(Comparator.comparing(Client::getTotalSpent).reversed())
                 .map(client -> {
                     ClientDto clientDTO = ClientDto.builder()
-                            .id(client.getId())
+//                            .id(client.getId())
                             .firstName(client.getFirstName())
                             .lastName(client.getLastName())
                             .totalSpent(client.getTotalSpent())
@@ -130,7 +158,7 @@ public class ClientService implements ClientUseCase {
     @Override
     public boolean removeClient(String phoneNumber) throws RevloException {
         Client client = findClientByPhoneNumber(phoneNumber);
-        log.info("Client {} {}'s record as been deleted. ", client.getFirstName(), client.getLastName());
+        log.info("Client {} {}'s record removed. ", client.getFirstName(), client.getLastName());
         clientRepository.delete(client);
 
         return true;
@@ -138,7 +166,7 @@ public class ClientService implements ClientUseCase {
 
 
     private boolean isValidPhoneNumber(String phoneNumber) {
-        String regex = "^[0-9+]+$";
+        String regex = "^[0-9]{11}$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(phoneNumber);
         return matcher.matches();
