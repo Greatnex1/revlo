@@ -6,5 +6,6 @@ public class ErrorMessages {
     public static final String REQUEST_PROCESSED = "Request processed successfully";
     public static final String USERNAME_ALREADY_EXIST= "username already exists";
     public static final String REQUEST_FAILED = "Request failed";
+    public static final String RATE_LIMIT_EXCEEDED = "Rate limit exceeded";
 
 }
