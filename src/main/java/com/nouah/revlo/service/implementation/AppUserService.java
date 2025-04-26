@@ -29,22 +29,9 @@ public class AppUserService implements AppUserUseCase {
     @Override
     public void userRegistration(AppUserDto staffDto) {
            staffDto.validateAppUserDto();
-           if (!isValidPassword(staffDto.password())) {
-               throw new IllegalArgumentException("password must have at least 8 characters, 1 upper case, 1 number, 1 special character");
-           }
-        if (!isValidPhoneNumber(staffDto.phoneNumber())) {
-            throw new PhoneNumberException("invalid phoneNumber format");
-        }
-           Optional<AppUser> existingUser = userRepository.findByUsername(staffDto.username().toLowerCase());
-
-           if (existingUser.isPresent()) {
-               throw new UserAlreadyExistException("A staff with this username already exists!", HttpStatus.CONFLICT);
-           }
-              if (!staffDto.password().equals(staffDto.confirmPassword())) {
-                  throw new IllegalArgumentException("Password does not match");
-              }
-                 buildNewUser(staffDto);
-              }
+           ensuringUserUniqueness(staffDto);
+           buildNewUser(staffDto);
+    }
 
     @Override
     public AppUser loadUser(String username) {
@@ -56,15 +43,32 @@ public class AppUserService implements AppUserUseCase {
         return password.matches("^(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!])(?!.*\\s).{8,}$");
     }
 
+
 //    private boolean isValidPhoneNumber(String phoneNumber){
 //        return phoneNumber.matches("^\\+234[0-9]{10}$|\\+244[0-9]{10}$");
 //    }
-
     private boolean isValidPhoneNumber(String phoneNumber) {
         String regex = "^[0-9]{11}$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(phoneNumber);
         return matcher.matches();
+    }
+
+    private void ensuringUserUniqueness(AppUserDto staffDto) {
+        if (!isValidPassword(staffDto.password())) {
+            throw new IllegalArgumentException("password must have at least 8 characters, 1 upper case, 1 number, 1 special character");
+        }
+        if (!isValidPhoneNumber(staffDto.phoneNumber())) {
+            throw new PhoneNumberException("invalid phoneNumber format");
+        }
+        Optional<AppUser> existingUser = userRepository.findByUsername(staffDto.username().toLowerCase());
+
+        if (existingUser.isPresent()) {
+            throw new UserAlreadyExistException("A staff with this username already exists!", HttpStatus.CONFLICT);
+        }
+        if (!staffDto.password().equals(staffDto.confirmPassword())) {
+            throw new IllegalArgumentException("Password does not match");
+        }
     }
 
     private void buildNewUser(AppUserDto staffDto) {
