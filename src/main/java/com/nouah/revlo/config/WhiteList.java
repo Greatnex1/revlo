@@ -14,13 +14,14 @@ public class WhiteList {
 
 
     public static final String[] CSRF_ROUTES = {
-           SIGNUP,LOGIN,CLIENT_ONBOARDING,
+           SIGNUP,LOGIN,CLIENT_ONBOARDING,CREATE_PRODUCT,CREATE_SALES,SEARCH_PRODUCT,FETCH_PRODUCTS,
+            REMOVE_PRODUCT,UPDATE_PRODUCT
 
     };
 
     public static final String[] ADMIN_ROUTES = {
-            "/api/clients/",
-            "/api/clients/{clientId}","/api/sales/","/api/products","/api/products/view-all"
+            CLIENT_REPORT,CREATE_PRODUCT,CREATE_SALES,CLIENT_ONBOARDING,REMOVE_CLIENT,REMOVE_PRODUCT,
+            PRODUCT_REPORT,SALES_REPORT,ALL_PRODUCTS,FETCH_PRODUCTS,FETCH_ALL_CLIENT, UPDATE_PRODUCT,
     };
 
 }
