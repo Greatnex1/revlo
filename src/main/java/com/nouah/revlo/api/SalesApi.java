@@ -5,16 +5,20 @@ import com.nouah.revlo.dto.SalesDto;
 import com.nouah.revlo.dto.SalesReportDto;
 import com.nouah.revlo.dto.SalesUpdateDto;
 import com.nouah.revlo.exception.RevloException;
+import com.nouah.revlo.generator.PdfReportGenerator;
 import com.nouah.revlo.models.entity.Sales;
 import com.nouah.revlo.service.implementation.SalesService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -44,12 +48,14 @@ public class SalesApi {
         }
     }
     @GetMapping
+    @Cacheable(value ="sales",key = "#salesId")
     public ResponseEntity<Sales> findATransaction(@Valid @RequestParam long salesId) throws RevloException {
         Sales sales = salesService.findSalesById(salesId);
         return ResponseEntity.status(HttpStatus.OK).body(sales);
     }
 
     @PutMapping("/update")
+    @CachePut(value ="sales",key = "#salesId")
     public ResponseEntity<ResponseDto> updateSales(@Valid @RequestParam long salesId,
                                                    @Valid @RequestParam long userId,
                                                    @Valid @RequestBody SalesUpdateDto salesUpdateDto) throws RevloException {
@@ -63,11 +69,25 @@ public class SalesApi {
 
         return ResponseEntity.status(status).body(response);
     }
+    @Cacheable(value = "sales", key = "'allSales'")
     @GetMapping("/all/transactions")
     public ResponseEntity<List<Sales>> getAllTransactions(){
         List<Sales> sales = salesService.getAllSales();
         return ResponseEntity.status(HttpStatus.OK).body(sales);
     }
+    @GetMapping("/sales/pdf")
+    public ResponseEntity<byte[]> downloadSalesReport() throws Exception {
+        List<Sales> sales = salesService.getAllSales(); // fetch from DB or mock
+        byte[] pdfBytes = PdfReportGenerator.generateSalesReport(sales);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "sales-report.pdf");
+
+        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+    }
+
+
     @GetMapping("/reports/sales")
     @Operation(summary = "Sales Report")
     public ResponseEntity<SalesReportDto> getSalesReport(@Valid @RequestParam String startDate,
@@ -75,6 +95,8 @@ public class SalesApi {
         SalesReportDto salesReport = salesService.generateSalesReport(startDate, endDate);
         return ResponseEntity.status(HttpStatus.OK).body(salesReport);
     }
+
+
 }
 
 
