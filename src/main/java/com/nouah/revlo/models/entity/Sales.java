@@ -28,7 +28,9 @@ public class Sales {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToMany
+//    @JoinColumn(name = "productId")
     private Set<Product> products;
+    private String productId;
     @ManyToOne
     private Client client;
     @ManyToOne
