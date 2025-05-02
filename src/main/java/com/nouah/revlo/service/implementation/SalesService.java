@@ -67,6 +67,7 @@ public class SalesService implements SalesUseCase {
                 .quantity(salesDto.getTotalQuantity())
                 .totalAmount(totalBill)
                 .products(products)
+                .createdBy(userId)
                 .dateCreated(LocalDateTime.now())
                 .build();
 
@@ -135,7 +136,6 @@ public class SalesService implements SalesUseCase {
                     transaction.getDateCreated().isEqual(start.atStartOfDay())).filter(transaction ->
                     transaction.getDateCreated().isEqual(end.atStartOfDay())).toList();
 
-
             int totalSales = sales.size();
             log.info("Total number of sales is : {}", totalSales);
             BigDecimal totalRevenue = calculateTotalRevenue(sales);
@@ -193,6 +193,7 @@ public class SalesService implements SalesUseCase {
                             .sellerName(seller.getUsername())
                             .totalRevenue(sellerRevenue)
                             .build();
+                    log.info("Top seller revenue: {}", dto.getTotalRevenue());
                     return dto;
                 })
                 .sorted((s1, s2) -> s2.getTotalRevenue().compareTo(s1.getTotalRevenue()))
