@@ -28,9 +28,7 @@ public class AppUserService implements AppUserUseCase {
     
     @Override
     public void userRegistration(AppUserDto staffDto) {
-           staffDto.validateAppUserDto();
-           ensuringUserUniqueness(staffDto);
-           buildNewUser(staffDto);
+           staffDto.validateAppUserDto(); ensuringUserUniqueness(staffDto); buildNewUser(staffDto);
     }
 
     @Override
@@ -43,10 +41,10 @@ public class AppUserService implements AppUserUseCase {
         return password.matches("^(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!])(?!.*\\s).{8,}$");
     }
 
-
-//    private boolean isValidPhoneNumber(String phoneNumber){
+//    private boolean isValidPhoneNumberWithThePlusSign(String phoneNumber){
 //        return phoneNumber.matches("^\\+234[0-9]{10}$|\\+244[0-9]{10}$");
 //    }
+
     private boolean isValidPhoneNumber(String phoneNumber) {
         String regex = "^[0-9]{11}$";
         Pattern pattern = Pattern.compile(regex);
@@ -55,12 +53,8 @@ public class AppUserService implements AppUserUseCase {
     }
 
     private void ensuringUserUniqueness(AppUserDto staffDto) {
-        if (!isValidPassword(staffDto.password())) {
-            throw new IllegalArgumentException("password must have at least 8 characters, 1 upper case, 1 number, 1 special character");
-        }
-        if (!isValidPhoneNumber(staffDto.phoneNumber())) {
-            throw new PhoneNumberException("invalid phoneNumber format");
-        }
+        validateUserPassword(staffDto);
+        validateUserPhoneNumber(staffDto);
         Optional<AppUser> existingUser = userRepository.findByUsername(staffDto.username().toLowerCase());
 
         if (existingUser.isPresent()) {
@@ -68,6 +62,17 @@ public class AppUserService implements AppUserUseCase {
         }
         if (!staffDto.password().equals(staffDto.confirmPassword())) {
             throw new IllegalArgumentException("Password does not match");
+        }
+    }
+
+    private void validateUserPhoneNumber(AppUserDto staffDto){
+        if (!isValidPhoneNumber(staffDto.phoneNumber())) {
+            throw new PhoneNumberException("invalid phoneNumber format");
+        }
+    }
+    private void validateUserPassword(AppUserDto staffDto){
+        if (!isValidPassword(staffDto.password())) {
+            throw new IllegalArgumentException("password must have at least 8 characters, 1 upper case, 1 number, 1 special character");
         }
     }
 
