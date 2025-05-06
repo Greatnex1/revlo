@@ -22,6 +22,9 @@ import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.Collections;
 import java.util.List;
+
+import static com.nouah.revlo.config.WhiteList.*;
+
 @Slf4j
 @Configuration
 @EnableWebSecurity
@@ -33,48 +36,32 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authProvider;
 
-    private final String[] NO_AUTH_ROUTES = {
-            "/api/v1/users/register","/api/login","/v3/api-docs",
-            "/v3/api-docs/**", "/swagger-ui.html","/swagger-ui/**"
-    };
-    private final String[] CSRF_ROUTES = {
-            "/api/v1/users/register","/api/login","/api/clients/",
-            "/api/clients/{clientId}","/api/sales/","/api/books/{salesId}",
 
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
+    requestHandler.setCsrfRequestAttributeName("_csrf");
+    http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
+                CorsConfiguration config = new CorsConfiguration();
+                config.setAllowedOrigins(Collections.singletonList("http://localhost:9090"));
+                config.setAllowedMethods(Collections.singletonList("*"));
+                config.setAllowCredentials(true);
+                config.setAllowedHeaders(Collections.singletonList("*"));
+                config.setExposedHeaders(List.of("Authorization"));
+                config.setMaxAge(3600L);
+                return config;
+            })).csrf((csrf) -> csrf.csrfTokenRequestHandler(requestHandler)
+                    .ignoringRequestMatchers(CSRF_ROUTES)
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+            .authenticationProvider(authProvider)
+            .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+            .authorizeHttpRequests((requests)->requests
+                    .requestMatchers(NO_AUTH_ROUTES).permitAll()
+                    .requestMatchers(ADMIN_ROUTES).hasAuthority("ADMIN")
+                    .anyRequest().authenticated());
+    return  http.build();
 
-    };
-
-//    private final String[] ADMIN_ROUTES = {
-//     "/api/v1/users/register","/api/login","/api/clients/",
-//             "/api/clients/{clientId}","/api/sales/","/api/books/{salesId}",
-//   };
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
-        requestHandler.setCsrfRequestAttributeName("_csrf");
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
-                    CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(Collections.singletonList("http://localhost:9090"));
-                    config.setAllowedMethods(Collections.singletonList("*"));
-                    config.setAllowCredentials(true);
-                    config.setAllowedHeaders(Collections.singletonList("*"));
-                    config.setExposedHeaders(List.of("Authorization"));
-                    config.setMaxAge(3600L);
-                    return config;
-                })).csrf(AbstractHttpConfigurer::disable);
-
-//                      .ignoringRequestMatchers( "/api/v1/users/register")
-//                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-//                .authenticationProvider(authProvider)
-//                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
-//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-//                .authorizeHttpRequests((requests)->requests
-//                        .requestMatchers(NO_AUTH_ROUTES).permitAll()
-////                      .requestMatchers(ADMIN_ROUTES).hasAuthority("ADMIN")
-//                        .anyRequest().authenticated());
-        return  http.build();
-
-    }
+}
 }
