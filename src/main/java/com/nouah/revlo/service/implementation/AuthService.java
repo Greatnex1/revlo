@@ -28,6 +28,11 @@ public class AuthService implements AuthUseCase {
 
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        return userAuthentication(request);
+    }
+
+
+    private AuthenticationResponse userAuthentication(AuthenticationRequest request) {
         Optional<AppUser> savedUser = userRepository.findByUsername(request.username().toLowerCase());
         if (savedUser.isPresent()){
 
