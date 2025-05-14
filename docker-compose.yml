@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   # Spring Boot application
-  sales-application:
+  revlo:
     build: .
     container_name: revlo
     ports:
