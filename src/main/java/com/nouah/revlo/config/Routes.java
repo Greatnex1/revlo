@@ -5,7 +5,7 @@ import lombok.Data;
 import static com.nouah.revlo.constants.UrlConstant.*;
 
 @Data
-public class WhiteList {
+public class Routes {
 
     public static final String[] NO_AUTH_ROUTES = {
             SIGNUP,LOGIN,"/v3/api-docs",
