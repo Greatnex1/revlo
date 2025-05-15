@@ -8,7 +8,7 @@ services:
     ports:
       - "8058:8060"  # Adjust as needed: host:container
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5429/revlo
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5429/revlo
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD= blessed
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
