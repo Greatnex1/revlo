@@ -68,7 +68,7 @@ mvn spring-boot:run
 
    ```bash
    git clone https://github.com/Greatnex1/revlo.git
-   cd SalesManagementSystem
+   cd revlo
    ```
 
 2. **Configure the Database:**
