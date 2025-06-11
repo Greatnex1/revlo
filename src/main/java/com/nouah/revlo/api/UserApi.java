@@ -32,7 +32,7 @@ import static com.nouah.revlo.constants.UrlConstant.URL_CONSTANT;
 public class UserApi {
     private AppUserService userService;
 
-    @PostMapping("/register")
+    @PostMapping(URL_C)
     @Operation(summary= "Create a new user")
     public ResponseEntity<ResponseDto> createAccount(@RequestBody @Valid AppUserDto userDto) {
         userService.userRegistration(userDto);
