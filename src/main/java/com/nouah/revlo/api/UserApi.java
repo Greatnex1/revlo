@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.ZonedDateTime;
 
 import static com.nouah.revlo.constants.ErrorMessages.REQUEST_PROCESSED;
+import static com.nouah.revlo.constants.UrlConstant.SIGNUP;
 import static com.nouah.revlo.constants.UrlConstant.URL_CONSTANT;
 
 
